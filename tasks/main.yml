@@ -1,0 +1,4 @@
+---
+- import_tasks: install.yml
+- import_tasks: reverse_proxy.yml
+  delegate_to: "{{ rocket_chat_reverse_proxy_host }}"

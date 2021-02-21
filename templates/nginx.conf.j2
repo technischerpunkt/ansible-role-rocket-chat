@@ -1,0 +1,69 @@
+# {{ ansible_managed }}
+
+{% if stage == "production" -%}
+server {
+  listen [::]:80;
+  listen 80;
+
+  server_name  {{ rocket_chat_fqdn }};
+
+  return 301 https://$host$request_uri;
+}
+{% endif %}
+
+server {
+  {% if stage != "production" %}
+  listen       80;
+  listen  [::]:80; {# ipv6 #}
+  {% endif %}
+  {% if stage == "production" %}
+  listen       443 ssl http2;
+  listen  [::]:443 ssl http2; {# ipv6 #}
+  {% endif %}
+
+  server_name  {{ rocket_chat_fqdn }};
+
+  {% if stage == "production" -%}
+  ssl_certificate {{ nginx_ssl_path }}/letsencrypt/{{ rocket_chat_fqdn }}-bundled.cert;
+  ssl_certificate_key {{ nginx_ssl_path }}/letsencrypt/{{ rocket_chat_fqdn }}.key;
+
+  include h5bp/directive-only/ssl.conf;
+  {% if nginx_ssl_stapling_enabled -%}
+  include h5bp/directive-only/ssl-stapling.conf;
+  {% endif -%}
+
+  ssl_dhparam {{ nginx_ssl_path }}/dhparam{{ nginx_ssl_dhparam_key_size }}.pem;
+
+  # HSTS (ngx_http_headers_module is required) (15768000 seconds = 6 months)
+  add_header Strict-Transport-Security max-age=15768000;
+  {% endif %}
+
+  # Specify a charset
+  charset utf-8;
+
+  access_log /var/log/nginx/{{ rocket_chat_fqdn }}.access.log {{ nginx_log_format }};
+  error_log /var/log/nginx/{{ rocket_chat_fqdn }}.error.log;
+
+  {% if stage == "production" -%}
+  {% block acme_challenge -%}
+  include acme-challenge-location.conf;
+  {% endblock -%}
+  {% endif -%}
+
+  # A suitable client_max_body_size has to be set or you will get errors
+  client_max_body_size 512M;
+
+  location / {
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+    proxy_set_header Host $http_host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forward-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forward-Proto http;
+    proxy_set_header X-Nginx-Proxy true;
+    proxy_redirect off;
+
+    proxy_pass http://{{ rocket_chat_private_ipv4 }}:3000/;
+  }
+}

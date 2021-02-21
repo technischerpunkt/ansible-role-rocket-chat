@@ -1,0 +1,10 @@
+---
+# ToDo: this should be moved to a dedicated nginx vhost role
+
+# Reload NGINX
+- name: "reload nginx"
+  service:
+    name: nginx
+    state: reloaded
+  delegate_to: "{{ rocket_chat_reverse_proxy_host }}"
+  become: true
