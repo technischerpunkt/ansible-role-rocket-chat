@@ -1,10 +1,11 @@
 ---
 stage: "production"
-rocket_chat_fqdn: "chat.example.com"
-rocket_chat_fqdn_aliases: []
-rocket_chat_version: "latest"
+rocket_chat_create_tokens: "false"
 rocket_chat_docker_base_dir: "/opt/docker"
 rocket_chat_data_dir: "{{ rocket_chat_docker_base_dir }}/data/rocket-chat-data"
+rocket_chat_exporter_port: 9458
+rocket_chat_fqdn: "chat.example.com"
+rocket_chat_fqdn_aliases: []
 rocket_chat_private_ipv4: "{{ ansible_default_ipv4.address }}"
-rocket_chat_create_tokens: "false"
 rocket_chat_reverse_proxy_host: "{{ ansible_default_ipv4.address }}"
+rocket_chat_version: "latest"
