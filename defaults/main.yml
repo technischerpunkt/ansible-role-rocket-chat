@@ -1,5 +1,7 @@
 ---
 stage: "production"
+rocket_chat_fqdn: "chat.example.com"
+rocket_chat_fqdn_aliases: []
 rocket_chat_version: "latest"
 rocket_chat_docker_base_dir: "/opt/docker"
 rocket_chat_data_dir: "{{ rocket_chat_docker_base_dir }}/data/rocket-chat-data"
