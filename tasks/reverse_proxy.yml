@@ -7,7 +7,7 @@
     src: "{{ item }}.j2"
     dest: "/etc/nginx/sites-available/{{ rocket_chat_fqdn }}.conf"
   with_items:
-    - nginx.conf
+    - vhost.conf
   notify: "reload nginx"
   become: yes
 
