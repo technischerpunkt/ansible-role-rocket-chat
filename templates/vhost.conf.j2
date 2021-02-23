@@ -1,6 +1,6 @@
 # {{ ansible_managed }}
 
-{% if stage == "production" -%}
+{% if stage != "development" -%}
 server {
   listen 80;
   listen [::]:80;
@@ -13,7 +13,7 @@ server {
 
 {% if rocket_chat_fqdn_aliases | length > 0 -%}
 server {
-  {% if stage != "production" -%}
+  {% if stage == "development" -%}
   listen       80;
   listen  [::]:80;
   {% else %}
@@ -23,12 +23,12 @@ server {
 
   server_name {{ rocket_chat_fqdn_aliases | join(' ') }};
 
-  return 301 https://{{ rocket_chat_fqdn }}$request_uri;
+  return 301 http{{ (stage == "development") | ternary('', 's') }}://{{ rocket_chat_fqdn }}$request_uri;
 }
 {% endif %}
 
 server {
-  {% if stage != "production" -%}
+  {% if stage == "development" -%}
   listen       80;
   listen  [::]:80;
   {% else %}
@@ -38,7 +38,7 @@ server {
 
   server_name {{ rocket_chat_fqdn }};
 
-  {% if stage == "production" -%}
+  {% if stage != "development" -%}
   ssl_certificate {{ nginx_ssl_path }}/letsencrypt/{{ rocket_chat_fqdn }}-bundled.cert;
   ssl_certificate_key {{ nginx_ssl_path }}/letsencrypt/{{ rocket_chat_fqdn }}.key;
 
@@ -59,7 +59,7 @@ server {
   access_log /var/log/nginx/{{ rocket_chat_fqdn }}.access.log {{ nginx_log_format }};
   error_log /var/log/nginx/{{ rocket_chat_fqdn }}.error.log;
 
-  {% if stage == "production" -%}
+  {% if stage != "development" -%}
   {% block acme_challenge -%}
   include acme-challenge-location.conf;
   {% endblock -%}

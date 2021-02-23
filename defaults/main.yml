@@ -1,5 +1,5 @@
 ---
-stage: "production"
+stage: "production" # "development" disabled ssl handling
 rocket_chat_create_tokens: "false"
 rocket_chat_docker_base_dir: "/opt/docker"
 rocket_chat_data_dir: "{{ rocket_chat_docker_base_dir }}/data/rocket-chat-data"
