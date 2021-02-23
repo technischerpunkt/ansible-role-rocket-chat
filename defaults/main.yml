@@ -9,3 +9,25 @@ rocket_chat_fqdn_aliases: []
 rocket_chat_private_ipv4: "{{ ansible_default_ipv4.address }}"
 rocket_chat_reverse_proxy_host: "{{ ansible_default_ipv4.address }}"
 rocket_chat_version: "latest"
+
+# Disable nginx access log per default
+rocket_chat_nginx_access_log: "off"
+rocket_chat_nginx_error_log: "/var/log/nginx/{{ rocket_chat_fqdn }}.error.log"
+
+rocket_chat_ssl_cert_path: "/etc/ssl/certs/ssl-cert-snakeoil.pem"
+rocket_chat_ssl_key_path: "/etc/ssl/private/ssl-cert-snakeoil.key"
+
+rocket_chat_nginx_ssl_preset: "intermediate"
+rocket_chat_nginx_ssl_presets:
+  modern:
+    protocols: TLSv1.3
+    ciphers: ""
+    prefer_server_ciphers: "off"
+  intermediate:
+    protocols: TLSv1.2 TLSv1.3
+    ciphers: ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384
+    prefer_server_ciphers: "off"
+rocket_chat_nginx_ssl_protocols: "{{ rocket_chat_nginx_ssl_presets[rocket_chat_nginx_ssl_preset]['protocols'] }}"
+rocket_chat_nginx_ssl_prefer_server_ciphers: "{{ rocket_chat_nginx_ssl_presets[rocket_chat_nginx_ssl_preset]['prefer_server_ciphers'] }}"
+rocket_chat_nginx_ssl_ciphers: "{{ rocket_chat_nginx_ssl_presets[rocket_chat_nginx_ssl_preset]['ciphers'] }}"
+rocket_chat_nginx_ssl_dhparam: "/etc/nginx/dhparam"
