@@ -9,7 +9,6 @@
   with_items:
     - vhost.conf
   notify: "reload nginx"
-  become: yes
 
 - name: Enable nginx block config
   file:
@@ -17,4 +16,3 @@
     dest: "/etc/nginx/sites-enabled/{{ rocket_chat_fqdn }}.conf"
     state: link
   notify: "reload nginx"
-  become: yes

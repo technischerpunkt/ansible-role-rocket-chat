@@ -8,7 +8,6 @@
     - path: "{{ rocket_chat_data_dir }}/dump"
     - path: "{{ rocket_chat_data_dir }}/uploads"
     - path: "{{ rocket_chat_data_dir }}/scripts"
-  become: yes
 
 - name: Install mongodb container
   docker_container:
@@ -19,7 +18,6 @@
       - "{{ rocket_chat_data_dir }}/db:/data/db"
       - "{{ rocket_chat_data_dir }}/dump:/dump"
     command: "mongod --smallfiles --oplogSize 128 --replSet rs0 --storageEngine=mmapv1"
-  become: yes
 
 # this container's job is just run the command to initialize the replica set.
 # it will run the command and remove himself (it will not stay running)
@@ -41,7 +39,6 @@
         done; (exit $$s)"
     links:
       - mongo:mongo
-  become: yes
 
 - name: Install rocket chat container
   docker_container:
@@ -70,4 +67,3 @@
           echo \"Tried $$i times. Waiting 5 secs...\";
           sleep 5;
         done; (exit $$s)"
-  become: yes
