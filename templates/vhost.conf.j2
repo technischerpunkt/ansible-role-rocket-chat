@@ -7,14 +7,12 @@ server {
 
   server_name {{ rocket_chat_fqdn }} {{ rocket_chat_fqdn_aliases | join(' ') }};
 
-  {% if stage != "development" -%}
   {% block acme_challenge -%}
   include acme-challenge-location.conf;
   {% endblock -%}
-  {% endif %}
 
   location / {
-    return 301 http{{ (stage == "development") | ternary('', 's') }}://{{ rocket_chat_fqdn }}$request_uri;
+    return 301 https://{{ rocket_chat_fqdn }}$request_uri;
   }
 }
 {% endif %}
