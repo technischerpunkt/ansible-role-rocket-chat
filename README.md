@@ -6,4 +6,4 @@ This role installs [Rocket.Chat](https://rocket.chat/) on a Debian host via Dock
 
 - Nginx for reverse proxy (can be on the same or different host)
 - Letsencrypt
-- Docker
+- Docker (installed via galaxy dependency [ansible-role-docker](https://github.com/technischerpunkt/ansible-role-docker))
